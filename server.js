@@ -1,12 +1,16 @@
 // import express
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 // create an instance of express
 const app = express();
 
 // use cors
 app.use(cors());
+
+// use cookie parser
+app.use(cookieParser("somesecret"));
 
 // body parser
 app.use(express.json());
@@ -151,6 +155,60 @@ app.delete("/api/groceries/:id", (req, res) => {
 
         // return the grocery item
         res.status(200).json(grocery);
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+// check for cookies
+app.get('/api/cookies', function (req, res) {
+    // Cookies that have not been signed
+    console.log('Cookies: ', req.cookies)
+
+    // Cookies that have been signed
+    console.log('Signed Cookies: ', req.signedCookies)
+})
+
+// set a cookie
+app.get("/api/set-cookie", (req, res) => {
+    try {
+        res.cookie(
+            "username",
+            "John Doe",
+            {
+                maxAge: 1000 * 60 * 60 * 24,
+                httpOnly: true,
+            }
+        )
+        res.status(200).send("Cookie set");
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+// create a signed cookie
+app.get("/api/set-signed-cookie", (req, res) => {
+    try {
+        res.cookie(
+            "authToken",
+            "1234567890",
+            {
+                maxAge: 1000 * 60 * 60 * 24,
+                httpOnly: true,
+                signed: true
+            }
+        )
+        res.status(200).send("Signed cookie set");
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+// clear a cookie
+app.get("/api/clear-cookie", (req, res) => {
+    try {
+        res.clearCookie("username");
+        res.status(200).send("Cookie cleared");
     } catch (error) {
         console.log(error);
     }
