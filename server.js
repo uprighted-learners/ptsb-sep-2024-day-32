@@ -20,8 +20,6 @@ app.get("/api/health", (req, res) => {
     }
 })
 
-
-
 let groceries = [
     {
         id: 1,
@@ -49,6 +47,28 @@ app.get("/api/groceries", (req, res) => {
     }
 })
 
+// GET - /api/groceries/:id - return a single grocery item by id
+app.get("/api/groceries/:id", (req, res) => {
+    try {
+        // get the id from the request
+        const id = req.params.id;
+
+        // find the grocery item by id
+        const grocery = groceries.find(
+            (grocery) => grocery.id === parseInt(id)
+        )
+
+        // if the grocery item is not found
+        if (!grocery) {
+            res.status(404).send("Grocery item not found");
+        }
+
+        // return the grocery item
+        res.status(200).json(grocery);
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 // route 404 not found
 app.use((req, res) => {
