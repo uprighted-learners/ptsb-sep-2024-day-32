@@ -8,6 +8,9 @@ const app = express();
 // use cors
 app.use(cors());
 
+// body parser
+app.use(express.json());
+
 // define the port
 const PORT = 8080;
 
@@ -58,10 +61,39 @@ app.get("/api/groceries/:id", (req, res) => {
             (grocery) => grocery.id === parseInt(id)
         )
 
+        console.log(grocery);
+
         // if the grocery item is not found
         if (!grocery) {
             res.status(404).send("Grocery item not found");
         }
+
+        // return the grocery item
+        res.status(200).json(grocery);
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+// PUT - /api/groceries/:id - update a grocery item by id
+app.put("/api/groceries/:id", (req, res) => {
+    try {
+        // get the id from the request
+        const id = req.params.id;
+
+        // find the grocery item by id
+        const grocery = groceries.find(
+            (grocery) => grocery.id === parseInt(id)
+        )
+
+        // if the grocery item is not found
+        if (!grocery) {
+            res.status(404).send("Grocery item not found");
+        }
+
+        // update the grocery item
+        grocery.name = req.body.name;
+        grocery.price = req.body.price;
 
         // return the grocery item
         res.status(200).json(grocery);
